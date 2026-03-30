@@ -19,14 +19,17 @@ jobs:
       - uses: actions/checkout@v6
       - name: Set up uv
         uses: astral-sh/setup-uv@v7
+        id: uv
         with:
           python-version: '3.14'
+          working-directory: python_package
+          activate-environment: true
       - name: Install dependencies
         run: |
           cd python_package
-          uv venv
+          source ${{ steps.uv.outputs.venv }}/bin/activate
           uv pip install .
       - name: Run tests
         run: |
-          source python_package/.venv/bin/activate
+          source ${{ steps.uv.outputs.venv }}/bin/activate
           stouputils all_doctests python_package
