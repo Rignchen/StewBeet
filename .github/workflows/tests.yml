@@ -1,0 +1,32 @@
+
+name: tests
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*'
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          python-version: '3.14'
+      - name: Install dependencies
+        run: |
+          cd python_package
+          uv venv
+          uv pip install .
+      - name: Run tests
+        run: |
+          source python_package/.venv/bin/activate
+          stouputils all_doctests python_package
